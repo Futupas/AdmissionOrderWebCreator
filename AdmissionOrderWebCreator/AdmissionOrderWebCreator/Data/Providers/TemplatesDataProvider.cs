@@ -19,7 +19,7 @@ namespace AdmissionOrderWebCreator.Data.Providers
             IConfiguration configuration,
             ILoggerFactory loggerFactory)
         {
-            Templates = configuration.GetValue<TemplatePath[]>("templates");
+            Templates = configuration.GetSection("templates").Get<TemplatePath[]>() ?? throw new Exception("Coudn't find templates section in configuration");
             Logger = loggerFactory.CreateLogger<TemplatesDataProvider>();
         }
 
