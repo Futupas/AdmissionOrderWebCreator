@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using AdmissionOrderWebCreator.Data;
+using AdmissionOrderWebCreator.Data.Providers;
 
 namespace AdmissionOrderWebCreator
 {
@@ -56,6 +57,7 @@ namespace AdmissionOrderWebCreator
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<TemplatesDataProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
