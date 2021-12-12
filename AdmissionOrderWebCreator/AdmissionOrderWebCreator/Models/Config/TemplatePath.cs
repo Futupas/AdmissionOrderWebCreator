@@ -6,7 +6,11 @@ using Newtonsoft.Json;
 
 namespace AdmissionOrderWebCreator.Models.Config
 {
-    public class TemplatePatch
+    public class TemplatePath
     {
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("path")]
+        public string Path { get; set; }
     }
 }
