@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Aspose.Words;
+//using Aspose.Words;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using Microsoft.Extensions.Configuration;
-using Aspose.Words.Replacing;
+//using Aspose.Words.Replacing;
 
 namespace AdmissionOrderWebCreator.Data
 {
@@ -20,12 +20,12 @@ namespace AdmissionOrderWebCreator.Data
             Logger = loggerFactory.CreateLogger<TemplateReplacer>();
         }
 
-        public void FindReplaceAndSave(Document source, string pattern, string replacement, Stream stream, bool saveToPdf = false)
-        {
-            source.Range.Replace(pattern, replacement, new FindReplaceOptions(FindReplaceDirection.Forward));
-            var saveFormat = saveToPdf ? SaveFormat.Pdf : SaveFormat.Docx;
+        //public void FindReplaceAndSave(Document source, string pattern, string replacement, Stream stream, bool saveToPdf = false)
+        //{
+        //    source.Range.Replace(pattern, replacement, new FindReplaceOptions(FindReplaceDirection.Forward));
+        //    var saveFormat = saveToPdf ? SaveFormat.Pdf : SaveFormat.Docx;
 
-            source.Save(stream, saveFormat);
-        }
+        //    source.Save(stream, saveFormat);
+        //}
     }
 }

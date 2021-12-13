@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using AdmissionOrderWebCreator.Models.Config;
 using System.IO;
-using Aspose.Words;
+//using Aspose.Words;
 using Microsoft.Extensions.Logging;
 
 namespace AdmissionOrderWebCreator.Data.Providers
@@ -33,14 +33,14 @@ namespace AdmissionOrderWebCreator.Data.Providers
             return result.Path;
         }
 
-        public Document GetTemplateDocument(string name)
-        {
-            var path = GetTemplatePath(name);
-            if (!File.Exists(path)) throw new Exception($"Template file with name {name} and path {path} not found");
+        //public Document GetTemplateDocument(string name)
+        //{
+        //    var path = GetTemplatePath(name);
+        //    if (!File.Exists(path)) throw new Exception($"Template file with name {name} and path {path} not found");
 
-            var doc = new Document(path);
+        //    var doc = new Document(path);
 
-            return doc;
-        }
+        //    return doc;
+        //}
     }
 }

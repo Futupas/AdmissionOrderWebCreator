@@ -1,9 +1,9 @@
 ﻿@page "/"
 
 @using AdmissionOrderWebCreator.Data.Providers
-@using Aspose.Words
-@using Aspose.Words.Replacing
 @using System.IO
+@using DocumentFormat.OpenXml.Packaging
+@using DocumentFormat.OpenXml.Wordprocessing
 
 @inject TemplatesDataProvider templatesDataProvider
 @inject IJSRuntime JS
@@ -24,7 +24,7 @@ Welcome to your new app.
         <span>@template.Name</span>
         <span>:</span>
         <span>@template.Path</span>
-        <button @onclick="e => Replace(template.Name)">Replace</button>
+        <button @onclick="e => Replace(template.Path)">Replace</button>
     </div>
 }
 <br />
@@ -53,29 +53,53 @@ Welcome to your new app.
 
     }
 
-    List<TemplateReplacer> Replacements = new();
-
-    void Replace(string templateName)
+    List<TemplateReplacer> Replacements = new()
     {
-        var doc = templatesDataProvider.GetTemplateDocument(templateName);
-        foreach (var replacer in Replacements)
+        new() { Pattern = "<name>", Replacement="dd" },
+        new() { Pattern = "<bald text>", Replacement = "dd" },
+    };
+
+    void Replace(string templatePath)
+    {
+        var originalStream = File.Open(templatePath, FileMode.Open);
+        var newStream = new MemoryStream();
+
+        originalStream.CopyTo(newStream);
+
+        using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(newStream, true))
         {
-            if (string.IsNullOrEmpty(replacer.Pattern) || string.IsNullOrEmpty(replacer.Replacement))
-                continue;
-            doc.Range.Replace(replacer.Pattern, replacer.Replacement, new FindReplaceOptions(FindReplaceDirection.Forward));
+            var body = wordDoc.MainDocumentPart.Document.Body;
+            var paras = body.Elements<Paragraph>();
+
+            foreach (var para in paras)
+            {
+                foreach (var run in para.Elements<Run>())
+                {
+                    foreach (var text in run.Elements<Text>())
+                    {
+                        foreach (var replacer in Replacements)
+                        {
+                            if (string.IsNullOrEmpty(replacer.Pattern) || string.IsNullOrEmpty(replacer.Replacement))
+                                continue;
+
+                            if (text.Text.Contains(replacer.Pattern))
+                            {
+                                text.Text = text.Text.Replace(replacer.Pattern, replacer.Replacement);
+                            }
+                        }
+                    }
+                }
+            }
+
+            wordDoc.Save();
         }
 
-        var stream = new MemoryStream();
+        originalStream.Close();
 
-        doc.Save(stream, SaveFormat.Pdf);
+        var fileName = "admission.docx";
 
-        var fileName = "admission.pdf";
+        var base64 = Convert.ToBase64String(newStream.ToArray());
 
-        stream.Position = 0;
-
-        var base64 = Convert.ToBase64String(stream.ToArray());
-
-        JS.InvokeVoidAsync("downloadBase64File", base64, "application/pdf", fileName);
-
+        JS.InvokeVoidAsync("downloadBase64File", base64, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", fileName);
     }
 }
